@@ -1,4 +1,4 @@
-export default function ProfileInterests({ interests }) {
+export default function ProfileInterests({ interests = [] }) {
   return (
     <section className="mt-10">
       <h2
@@ -7,16 +7,21 @@ export default function ProfileInterests({ interests }) {
       >
         Interests
       </h2>
-      <ul className="mt-4 flex list-none flex-wrap gap-2 p-0">
-        {interests.map((interest) => (
-          <li
-            key={interest}
-            className="border border-stone-300 px-3 py-1.5 text-sm text-stone-800"
-          >
-            {interest}
-          </li>
-        ))}
-      </ul>
+
+      {interests.length === 0 ? (
+        <p className="mt-4 text-stone-600">No interests added yet.</p>
+      ) : (
+        <ul className="mt-4 flex list-none flex-wrap gap-2 p-0">
+          {interests.map((interest) => (
+            <li
+              key={interest}
+              className="border border-stone-300 px-3 py-1.5 text-sm text-stone-800"
+            >
+              {interest}
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   )
 }

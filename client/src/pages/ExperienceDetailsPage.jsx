@@ -1,10 +1,50 @@
+import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { getStoryById } from '../data/mockStories'
 import Button from '../components/common/Button'
+import { getExperienceById } from '../api/experiences'
 
 export default function ExperienceDetailsPage() {
   const { storyId } = useParams()
-  const story = getStoryById(storyId)
+  const [story, setStory] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    let cancelled = false
+
+    async function load() {
+      try {
+        const data = await getExperienceById(storyId)
+        if (!cancelled) setStory(data)
+      } catch (err) {
+        console.error(err)
+        if (!cancelled) setError('Could not load this story.')
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    }
+
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [storyId])
+
+  if (loading) {
+    return (
+      <div className="px-5 py-12 sm:px-8 md:px-12">
+        <p className="text-stone-600">Loading story…</p>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="px-5 py-12 sm:px-8 md:px-12">
+        <p className="text-red-700">{error}</p>
+      </div>
+    )
+  }
 
   if (!story) {
     return (

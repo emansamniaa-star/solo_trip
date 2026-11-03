@@ -3,9 +3,12 @@ import { Link, useNavigate } from 'react-router-dom'
 import Input from '../common/Input'
 import TextArea from '../common/TextArea'
 import Button from '../common/Button'
+import { registerUser } from '../../api/auth'
 
 export default function RegisterForm() {
   const navigate = useNavigate()
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
   const [form, setForm] = useState({
     firstName: '',
     city: '',
@@ -19,9 +22,19 @@ export default function RegisterForm() {
     return (event) => setForm((prev) => ({ ...prev, [field]: event.target.value }))
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
-    navigate('/profile')
+    setError('')
+    setSaving(true)
+
+    try {
+      await registerUser(form)
+      navigate('/profile')
+    } catch (err) {
+      setError(err.message || 'Could not create account.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -82,7 +95,12 @@ export default function RegisterForm() {
         placeholder="Tell companions a little about how you like to travel…"
         rows={4}
       />
-      <Button type="submit">Create account</Button>
+
+      {error && <p className="text-sm text-red-700">{error}</p>}
+
+      <Button type="submit" disabled={saving}>
+        {saving ? 'Creating…' : 'Create account'}
+      </Button>
       <p className="text-sm text-stone-600">
         Already registered?{' '}
         <Link to="/login" className="font-semibold text-amber-900 hover:underline">

@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { getTripById } from '../data/mockTrips'
+import { getTripById } from '../api/trips'
 import TripHeader from '../components/trips/TripHeader'
 import TripMeta from '../components/trips/TripMeta'
 import TripDescription from '../components/trips/TripDescription'
@@ -8,7 +9,53 @@ import Button from '../components/common/Button'
 
 export default function TripDetailsPage() {
   const { tripId } = useParams()
-  const trip = getTripById(tripId)
+  const [trip, setTrip] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    let cancelled = false
+
+    async function loadTrip() {
+      try {
+        const data = await getTripById(tripId)
+        if (!cancelled) {
+          setTrip(data)
+        }
+      } catch (err) {
+        console.error(err)
+        if (!cancelled) {
+          setError('Could not load this trip.')
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false)
+        }
+      }
+    }
+
+    loadTrip()
+
+    return () => {
+      cancelled = true
+    }
+  }, [tripId])
+
+  if (loading) {
+    return (
+      <div className="px-5 py-12 sm:px-8 md:px-12">
+        <p className="text-stone-600">Loading trip…</p>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="px-5 py-12 sm:px-8 md:px-12">
+        <p className="text-red-700">{error}</p>
+      </div>
+    )
+  }
 
   if (!trip) {
     return (

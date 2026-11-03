@@ -1,0 +1,36 @@
+ALL_LICENSES — Solo Trip
+========================
+
+Third-party packages used by this project and their licenses.
+Operating system and programming languages are excluded (per course requirements).
+
+CLIENT (React / Vite)
+---------------------
+react                      MIT
+react-dom                  MIT
+react-router-dom           MIT
+vite                       MIT
+@vitejs/plugin-react       MIT
+tailwindcss                MIT
+@tailwindcss/vite          MIT
+oxlint                     MIT
+
+SERVER (Node / Express)
+-----------------------
+express                    MIT
+cors                       MIT
+dotenv                     BSD-2-Clause
+bcryptjs                   MIT
+jsonwebtoken               MIT
+@neondatabase/serverless   Apache-2.0
+
+SERVER DEV / TEST
+-----------------
+vitest                     MIT
+supertest                  MIT
+@vitest/coverage-v8        MIT
+
+Notes
+-----
+- License names follow each package’s published npm license field.
+- Lockfiles (package-lock.json) are kept under client/ and server/ for reproducible installs.

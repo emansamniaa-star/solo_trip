@@ -2,16 +2,28 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Input from '../common/Input'
 import Button from '../common/Button'
+import { loginUser } from '../../api/auth'
 
 export default function LoginForm() {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
-    // UI-only for now — real auth comes with the backend sprint
-    navigate('/profile')
+    setError('')
+    setSaving(true)
+
+    try {
+      await loginUser({ email, password })
+      navigate('/profile')
+    } catch (err) {
+      setError(err.message || 'Could not log in.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -35,8 +47,11 @@ export default function LoginForm() {
         required
         autoComplete="current-password"
       />
-      <Button type="submit" className="w-full sm:w-auto">
-        Log in
+
+      {error && <p className="text-sm text-red-700">{error}</p>}
+
+      <Button type="submit" className="w-full sm:w-auto" disabled={saving}>
+        {saving ? 'Logging in…' : 'Log in'}
       </Button>
       <p className="text-sm text-stone-600">
         New here?{' '}
