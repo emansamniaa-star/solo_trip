@@ -1,0 +1,29 @@
+{
+  "name": "solo-trip-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "setup-db": "node setupDb.js",
+    "setup-users": "node setupUsers.js",
+    "seed": "node seed.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^3.2.4",
+    "supertest": "^7.1.4",
+    "vitest": "^3.2.4"
+  }
+}

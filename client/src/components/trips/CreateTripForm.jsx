@@ -3,9 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import Input from '../common/Input'
 import TextArea from '../common/TextArea'
 import Button from '../common/Button'
+import { createTrip } from '../../api/trips'
 
 export default function CreateTripForm() {
   const navigate = useNavigate()
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
   const [form, setForm] = useState({
     destination: '',
     departureCity: '',
@@ -21,10 +24,33 @@ export default function CreateTripForm() {
     return (event) => setForm((prev) => ({ ...prev, [field]: event.target.value }))
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
-    // UI-only: pretend create succeeded and show trip #1 as demo
-    navigate('/trips/1')
+    setError('')
+    setSaving(true)
+
+    try {
+      const saved = localStorage.getItem('soloTripUser')
+      const currentUser = saved ? JSON.parse(saved) : null
+
+      if (!currentUser) {
+        setError('Please log in before publishing a trip.')
+        setSaving(false)
+        return
+      }
+
+      const created = await createTrip({
+        ...form,
+        hostName: currentUser.firstName,
+      })
+
+      navigate(`/trips/${created.id}`)
+    } catch (err) {
+      console.error(err)
+      setError('Could not publish trip. Is the server running?')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -103,7 +129,12 @@ export default function CreateTripForm() {
         onChange={updateField('itinerary')}
         rows={4}
       />
-      <Button type="submit">Publish trip</Button>
+
+      {error && <p className="text-sm text-red-700">{error}</p>}
+
+      <Button type="submit" disabled={saving}>
+        {saving ? 'Publishing…' : 'Publish trip'}
+      </Button>
     </form>
   )
 }

@@ -1,117 +1,90 @@
-# solo_trip
-Travel Companion Platform for Arab Women
+# Solo Trip
 
-An inclusive and empowering web application designed to help Arab women find travel companions, connect with like-minded travelers, and share authentic travel experiences safely.
+Travel companion platform for Arab women — find overlapping trips, connect safely, and share experiences.
 
-📌 Project Overview
+## Development environment (§1)
 
-Many women wish to explore new destinations but prefer not to travel alone. This application connects Arab women traveling to the same destinations during overlapping dates—whether they wish to spend their entire trip together or simply join forces for specific activities, meals, or excursions.
+- **Recommended OS:** Linux or macOS (Windows works via WSL2 recommended for course alignment).
+- **Stack:** React (Vite) frontend + Node.js/Express API + Neon Postgres.
+- **Repo layout:**
+  - `client/` — frontend
+  - `server/` — backend API
+  - `docs/USER_STORIES.md` — Agile user stories / board snapshot
+  - `ALL_LICENSES` — third-party licenses
+  - `docker-compose.yml` — containerized API
 
-Additionally, the platform acts as a community hub where users can publish recommendations, share photos, leave reviews, and offer practical tips regarding safety, accommodation, and budget.
+## Quick start
 
-🎯 Target Audience
+### 1) Server
 
-Primary Audience: Arab women interested in domestic or international travel.
+```bash
+cd server
+cp .env.example .env   # add your Neon DATABASE_URL
+npm install
+npm run setup-db
+npm run setup-users
+npm run seed
+npm run dev
+```
 
-Use Cases:
+API: `http://localhost:3001`  
+Health: `GET /api/health`
 
-Finding companions for full trips.
+### 2) Client
 
-Finding companions for partial trips or specific day-trips/activities.
+```bash
+cd client
+cp .env.example .env
+npm install
+npm run dev
+```
 
-Seeking and sharing authentic travel safety tips and local advice.
+App: `http://localhost:5173` (or next free port)
 
-✨ Core Features
+## Git workflow (§2)
 
-1. User Profiles & Authentication
+- `main` — stable integration branch
+- Feature work on branches such as `cursor/...` or `feature/backend` / `feature/frontend`
+- Open Pull Requests for review (course Code Review requirement)
 
-Secure registration and login.
+## Scripts
 
-Personal profiles detailing:
+| Area | Command | Purpose |
+|------|---------|---------|
+| server | `npm run dev` | Watch API |
+| server | `npm test` / `npm run test:coverage` | Unit/API tests (≥70% thresholds) |
+| server | `npm run setup-db` / `setup-users` / `seed` | Neon schema + sample trips |
+| client | `npm run dev` / `build` / `lint` | UI |
 
-First name & city/region of residence.
+## Docker (§10)
 
-Personal introduction & bio.
+```bash
+# from repo root (requires server/.env with DATABASE_URL)
+docker compose up --build
+```
 
-Travel style (e.g., budget, luxury, backpacking, cultural) and personal interests.
+Or build the API image only:
 
-Profile picture (optional).
+```bash
+docker build -t solo-trip-api ./server
+```
 
-2. Trip Listings
+## CI/CD (§11)
 
-Create, publish, and edit upcoming trips.
+GitHub Actions workflow `.github/workflows/ci.yml` runs on PRs/pushes:
 
-Key listing details:
+1. Server tests + coverage  
+2. Client lint + build  
+3. Docker image build  
 
-Destination country/city.
+## Security notes (§9)
 
-Departure and return dates.
+- Passwords hashed with `bcryptjs` (never stored plain text)
+- Input validation on register/login/create trip
+- `.env` is gitignored; use `.env.example` templates
+- Parameterized SQL via Neon tagged templates
 
-Estimated budget & departure city.
+## Logging (§8)
 
-Detailed trip description & planned itineraries.
-
-Specific companion preferences.
-
-3. Date-Overlap & Destination Matching
-
-Advanced search filtering by destination and date ranges.
-
-Smart Date Overlap Detection: Identifies and displays overlapping travel dates (including partial overlaps) and calculates shared days.
-
-Example: User A travels Oct 1–10; User B travels Oct 5–15. System highlights the 6 overlapping days (Oct 5–10).
-
-4. Travel Experiences & Recommendations
-
-Photo uploading for past trips.
-
-Personal travel stories and detailed attraction/destination reviews.
-
-Curated tips: Transportation, safety, local etiquette, budget hacks, and things to avoid.
-
-5. Ratings & Moderation
-
-Reviews for travel destinations and experiences.
-
-Companion reviews following a completed shared trip (planned feature).
-
-In-app reporting mechanism for inappropriate, abusive, or misleading content.
-
-6. Communication & Safety
-
-Direct in-app messaging between connected users.
-
-Optional WhatsApp contact sharing (requires explicit user consent).
-
-Strong privacy controls protecting personal contact information.
-
-📱 Main Application Pages
-
-Home Page: Hero banner, featured trips, top destination recommendations, and community stories.
-
-Authentication Page: Registration & Login.
-
-User Profile: Personal bio, preferences, upcoming trips, and past reviews.
-
-Create Trip Listing: Form for posting new travel plans.
-
-Search & Matching Page: Filter trips by date and location with overlap visualization.
-
-Trip Details Page: Full itinerary, host details, and direct contact options.
-
-Experiences & Recommendations Hub: Community feed for photos, reviews, and travel guides.
-
-Messaging Center: Real-time user-to-user private chat.
-
-🛠️ Technology Stack
-
-Frontend: React.js, JavaScript (ES6+), HTML5, CSS3 / Tailwind CSS
-
-Backend: Node.js, Express.js
-
-Database: MongoDB (with Mongoose ORM) or PostgreSQL / MySQL
-
-Media Storage: Cloudinary or AWS S3 (for photo uploads)
-
-Version Control: Git, GitHub
-
+- Console request log for every HTTP call (`requestLogger`)
+- External Neon calls appended to `server/logs/external-api.log`
