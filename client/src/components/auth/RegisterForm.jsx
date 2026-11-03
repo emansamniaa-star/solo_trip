@@ -28,8 +28,7 @@ export default function RegisterForm() {
     setSaving(true)
 
     try {
-      const user = await registerUser(form)
-      localStorage.setItem('soloTripUser', JSON.stringify(user))
+      await registerUser(form)
       navigate('/profile')
     } catch (err) {
       setError(err.message || 'Could not create account.')

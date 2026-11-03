@@ -17,8 +17,7 @@ export default function LoginForm() {
     setSaving(true)
 
     try {
-      const user = await loginUser({ email, password })
-      localStorage.setItem('soloTripUser', JSON.stringify(user))
+      await loginUser({ email, password })
       navigate('/profile')
     } catch (err) {
       setError(err.message || 'Could not log in.')

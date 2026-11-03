@@ -19,9 +19,10 @@ describe('auth API', () => {
     vi.resetModules()
     createUser.mockReset()
     findUserByEmail.mockReset()
+    process.env.JWT_SECRET = 'test-secret'
   })
 
-  it('registers a user', async () => {
+  it('registers a user and returns a token', async () => {
     createUser.mockResolvedValue({
       id: 1,
       firstName: 'Eman',
@@ -37,8 +38,9 @@ describe('auth API', () => {
       travelStyle: 'Cultural',
     })
     expect(res.status).toBe(201)
-    expect(res.body.firstName).toBe('Eman')
-    expect(res.body.passwordHash).toBeUndefined()
+    expect(res.body.user.firstName).toBe('Eman')
+    expect(res.body.token).toBeTruthy()
+    expect(res.body.user.passwordHash).toBeUndefined()
   })
 
   it('rejects short password', async () => {
@@ -52,7 +54,7 @@ describe('auth API', () => {
     expect(res.status).toBe(400)
   })
 
-  it('logs in with valid password', async () => {
+  it('logs in with valid password and returns a token', async () => {
     const passwordHash = await bcrypt.hash('secret1', 10)
     findUserByEmail.mockResolvedValue({
       id: 1,
@@ -69,8 +71,8 @@ describe('auth API', () => {
       password: 'secret1',
     })
     expect(res.status).toBe(200)
-    expect(res.body.firstName).toBe('Eman')
-    expect(res.body.passwordHash).toBeUndefined()
+    expect(res.body.user.firstName).toBe('Eman')
+    expect(res.body.token).toBeTruthy()
   })
 
   it('rejects bad login', async () => {

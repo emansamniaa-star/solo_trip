@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Input from '../common/Input'
 import TextArea from '../common/TextArea'
 import Button from '../common/Button'
 import { createTrip } from '../../api/trips'
+import { getSavedUser, getToken } from '../../api/session'
 
 export default function CreateTripForm() {
   const navigate = useNavigate()
@@ -30,24 +31,17 @@ export default function CreateTripForm() {
     setSaving(true)
 
     try {
-      const saved = localStorage.getItem('soloTripUser')
-      const currentUser = saved ? JSON.parse(saved) : null
-
-      if (!currentUser) {
+      if (!getToken() || !getSavedUser()) {
         setError('Please log in before publishing a trip.')
         setSaving(false)
         return
       }
 
-      const created = await createTrip({
-        ...form,
-        hostName: currentUser.firstName,
-      })
-
+      const created = await createTrip(form)
       navigate(`/trips/${created.id}`)
     } catch (err) {
       console.error(err)
-      setError('Could not publish trip. Is the server running?')
+      setError(err.message || 'Could not publish trip. Is the server running?')
     } finally {
       setSaving(false)
     }
@@ -130,7 +124,16 @@ export default function CreateTripForm() {
         rows={4}
       />
 
-      {error && <p className="text-sm text-red-700">{error}</p>}
+      {error && (
+        <p className="text-sm text-red-700">
+          {error}{' '}
+          {!getToken() && (
+            <Link to="/login" className="font-semibold underline">
+              Log in
+            </Link>
+          )}
+        </p>
+      )}
 
       <Button type="submit" disabled={saving}>
         {saving ? 'Publishing…' : 'Publish trip'}

@@ -1,21 +1,15 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import ProfileHeader from '../components/profile/ProfileHeader'
 import ProfileInterests from '../components/profile/ProfileInterests'
 import ProfileTrips from '../components/profile/ProfileTrips'
+import Button from '../components/common/Button'
 import { getTrips } from '../api/trips'
-
-function readSavedUser() {
-  try {
-    const raw = localStorage.getItem('soloTripUser')
-    return raw ? JSON.parse(raw) : null
-  } catch {
-    return null
-  }
-}
+import { clearSession, getSavedUser } from '../api/session'
 
 export default function ProfilePage() {
-  const [user] = useState(() => readSavedUser())
+  const navigate = useNavigate()
+  const [user] = useState(() => getSavedUser())
   const [myTrips, setMyTrips] = useState([])
 
   useEffect(() => {
@@ -32,6 +26,7 @@ export default function ProfilePage() {
           setMyTrips(
             trips.filter(
               (trip) =>
+                trip.hostUserId === user.id ||
                 trip.hostName?.toLowerCase() === user.firstName?.toLowerCase(),
             ),
           )
@@ -47,6 +42,11 @@ export default function ProfilePage() {
       cancelled = true
     }
   }, [user])
+
+  function handleLogout() {
+    clearSession()
+    navigate('/login')
+  }
 
   if (!user) {
     return (
@@ -77,7 +77,12 @@ export default function ProfilePage() {
 
   return (
     <div className="px-5 py-12 sm:px-8 md:px-12">
-      <ProfileHeader user={user} />
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <ProfileHeader user={user} />
+        <Button type="button" variant="secondary" onClick={handleLogout}>
+          Log out
+        </Button>
+      </div>
       <ProfileInterests interests={user.interests || []} />
       <ProfileTrips trips={myTrips} />
     </div>

@@ -11,6 +11,7 @@ export async function findAllTrips() {
       budget,
       travel_style AS "travelStyle",
       host_name AS "hostName",
+      host_user_id AS "hostUserId",
       blurb,
       itinerary,
       created_at AS "createdAt"
@@ -30,6 +31,7 @@ export async function findTripById(id) {
       budget,
       travel_style AS "travelStyle",
       host_name AS "hostName",
+      host_user_id AS "hostUserId",
       blurb,
       itinerary,
       created_at AS "createdAt"
@@ -49,6 +51,7 @@ export async function createTrip(data) {
       budget,
       travel_style,
       host_name,
+      host_user_id,
       blurb,
       itinerary
     ) VALUES (
@@ -59,6 +62,7 @@ export async function createTrip(data) {
       ${data.budget},
       ${data.travelStyle},
       ${data.hostName},
+      ${data.hostUserId},
       ${data.blurb},
       ${data.itinerary || ''}
     )
@@ -71,6 +75,7 @@ export async function createTrip(data) {
       budget,
       travel_style AS "travelStyle",
       host_name AS "hostName",
+      host_user_id AS "hostUserId",
       blurb,
       itinerary,
       created_at AS "createdAt"

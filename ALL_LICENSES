@@ -21,6 +21,7 @@ express                    MIT
 cors                       MIT
 dotenv                     BSD-2-Clause
 bcryptjs                   MIT
+jsonwebtoken               MIT
 @neondatabase/serverless   Apache-2.0
 
 SERVER DEV / TEST

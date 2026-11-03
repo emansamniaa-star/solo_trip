@@ -4,9 +4,9 @@
 
 | Status | Stories |
 |--------|---------|
-| Done | US-01 Health API, US-02 Neon trips CRUD (read/create), US-03 Auth register/login, US-04 Wire trips UI, US-05 Profile session |
-| In progress | US-06 Course tooling (tests, Docker, CI, logging) |
-| Backlog | US-07 JWT protected routes, US-08 Experiences API, US-09 Messages API |
+| Done | US-01–US-06 tooling, US-07 JWT, US-08 Experiences API, US-09 Messages API, US-04/05 client wiring |
+| In progress | — |
+| Backlog | Push Docker Hub image (optional), semantic GitHub Releases |
 
 ## User stories
 

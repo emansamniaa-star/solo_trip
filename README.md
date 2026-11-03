@@ -21,14 +21,17 @@ Travel companion platform for Arab women — find overlapping trips, connect saf
 cd server
 cp .env.example .env   # add your Neon DATABASE_URL
 npm install
-npm run setup-db
-npm run setup-users
+npm run setup-all
 npm run seed
 npm run dev
 ```
 
 API: `http://localhost:3001`  
 Health: `GET /api/health`
+
+Set `JWT_SECRET` in `server/.env` (see `.env.example`).  
+**Local run does not require Docker** — use `npm run dev` for server and client.
+
 
 ### 2) Client
 

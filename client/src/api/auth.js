@@ -1,3 +1,5 @@
+import { authHeaders, saveSession } from './session'
+
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
 
 export async function registerUser(userData) {
@@ -10,7 +12,8 @@ export async function registerUser(userData) {
   if (!response.ok) {
     throw new Error(data.error || 'Failed to register')
   }
-  return data
+  saveSession(data)
+  return data.user
 }
 
 export async function loginUser({ email, password }) {
@@ -23,5 +26,16 @@ export async function loginUser({ email, password }) {
   if (!response.ok) {
     throw new Error(data.error || 'Failed to login')
   }
-  return data
+  saveSession(data)
+  return data.user
+}
+
+export async function fetchMe() {
+  const response = await fetch(`${API_URL}/api/me`, {
+    headers: authHeaders(),
+  })
+  if (!response.ok) {
+    throw new Error('Not authenticated')
+  }
+  return response.json()
 }

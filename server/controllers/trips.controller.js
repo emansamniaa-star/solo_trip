@@ -38,7 +38,6 @@ export async function createTrip(req, res, next) {
       endDate,
       budget,
       travelStyle,
-      hostName,
       blurb,
       itinerary = '',
     } = req.body
@@ -50,7 +49,6 @@ export async function createTrip(req, res, next) {
       !endDate ||
       !budget ||
       !travelStyle ||
-      !hostName ||
       !blurb
     ) {
       return res.status(400).json({ error: 'Missing required trip fields' })
@@ -63,7 +61,8 @@ export async function createTrip(req, res, next) {
       endDate,
       budget,
       travelStyle,
-      hostName,
+      hostName: req.user.firstName,
+      hostUserId: req.user.id,
       blurb,
       itinerary,
     })

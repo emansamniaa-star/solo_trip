@@ -14,13 +14,14 @@ async function setup() {
       budget TEXT NOT NULL,
       travel_style TEXT NOT NULL,
       host_name TEXT NOT NULL,
+      host_user_id INTEGER,
       blurb TEXT NOT NULL,
       itinerary TEXT NOT NULL DEFAULT '',
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `
 
-  console.log('✅ trips table reset with full schema on Neon')
+  console.log('✅ trips table reset with host_user_id on Neon')
 }
 
 setup().catch((error) => {

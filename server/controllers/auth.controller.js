@@ -1,5 +1,11 @@
 import bcrypt from 'bcryptjs'
 import * as userModel from '../models/user.model.js'
+import { signToken } from '../utils/token.js'
+
+function authResponse(user) {
+  const token = signToken(user)
+  return { user, token }
+}
 
 export async function register(req, res, next) {
   try {
@@ -24,7 +30,7 @@ export async function register(req, res, next) {
       travelStyle,
     })
 
-    res.status(201).json(user)
+    res.status(201).json(authResponse(user))
   } catch (error) {
     if (error.code === '23505') {
       return res.status(409).json({ error: 'Email already registered' })
@@ -54,8 +60,17 @@ export async function login(req, res, next) {
     }
 
     const { passwordHash, ...safeUser } = user
-    res.json(safeUser)
+    res.json(authResponse(safeUser))
   } catch (error) {
     next(error)
   }
+}
+
+/** Return the logged-in user from the JWT (no password) */
+export async function me(req, res) {
+  res.json({
+    id: req.user.id,
+    email: req.user.email,
+    firstName: req.user.firstName,
+  })
 }
